@@ -165,14 +165,19 @@ namespace OSDP.Net
                 ReplyReceived -= EventHandler;
                 source.SetResult(replyEventArgs.Reply);
             }
-
+            
             ReplyReceived += EventHandler;
             
             _buses.FirstOrDefault(bus => bus.Id == connectionId)?.SendCommand(command);
 
             if (source.Task == await Task.WhenAny(source.Task, Task.Delay(_replyResponseTimeout)).ConfigureAwait(false))
             {
-                return await source.Task;
+                var reply = await source.Task;
+                if (reply.Type == ReplyType.Nak)
+                {
+                    throw new NAKException(reply);
+                }
+                return await source.Task; 
             }
             else
             {
