@@ -7,12 +7,8 @@ namespace OSDP.Net.Connections
 {
     public class SerialPortOsdpConnection : IOsdpConnection
     {
-        private SerialPort _serialPort = new SerialPort();
+        private readonly SerialPort _serialPort = new SerialPort();
 
-        public SerialPortOsdpConnection(SerialPort serialPort)
-        {
-            _serialPort = serialPort;
-        }
         public SerialPortOsdpConnection(string portName, int baudRate)
         {
             _serialPort.PortName = portName ?? throw new ArgumentNullException(nameof(portName));
